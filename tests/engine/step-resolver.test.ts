@@ -1,0 +1,91 @@
+import { resolveTarget, getTargetRect } from '../../src/engine/step-resolver.ts'
+import type { RefObject } from 'react'
+
+describe('resolveTarget', () => {
+  afterEach(() => {
+    document.body.innerHTML = ''
+  })
+
+  it('resolves a CSS selector string', () => {
+    const el = document.createElement('div')
+    el.id = 'my-target'
+    document.body.appendChild(el)
+
+    const result = resolveTarget('#my-target')
+    expect(result).toBe(el)
+  })
+
+  it('returns null for a non-existent CSS selector', () => {
+    const result = resolveTarget('#does-not-exist')
+    expect(result).toBeNull()
+  })
+
+  it('resolves a class-based CSS selector', () => {
+    const el = document.createElement('span')
+    el.className = 'tour-step'
+    document.body.appendChild(el)
+
+    const result = resolveTarget('.tour-step')
+    expect(result).toBe(el)
+  })
+
+  it('resolves a React ref with a current element', () => {
+    const el = document.createElement('button')
+    const ref: RefObject<HTMLElement> = { current: el }
+
+    const result = resolveTarget(ref)
+    expect(result).toBe(el)
+  })
+
+  it('returns null for a React ref with null current', () => {
+    const ref: RefObject<HTMLElement | null> = { current: null }
+
+    const result = resolveTarget(ref)
+    expect(result).toBeNull()
+  })
+})
+
+describe('getTargetRect', () => {
+  it('returns correct dimensions from getBoundingClientRect', () => {
+    const el = document.createElement('div')
+    document.body.appendChild(el)
+
+    vi.spyOn(el, 'getBoundingClientRect').mockReturnValue({
+      x: 10,
+      y: 20,
+      width: 100,
+      height: 50,
+      top: 20,
+      right: 110,
+      bottom: 70,
+      left: 10,
+      toJSON: () => {},
+    })
+
+    const rect = getTargetRect(el)
+    expect(rect).toEqual({
+      x: 10,
+      y: 20,
+      width: 100,
+      height: 50,
+    })
+
+    document.body.removeChild(el)
+  })
+
+  it('returns zero-based rect for elements with no layout', () => {
+    const el = document.createElement('div')
+    document.body.appendChild(el)
+
+    // jsdom getBoundingClientRect returns all zeros by default
+    const rect = getTargetRect(el)
+    expect(rect).toEqual({
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+    })
+
+    document.body.removeChild(el)
+  })
+})
