@@ -1,12 +1,11 @@
 import { defineConfig } from 'tsdown'
 
 export default defineConfig({
-  entry: ['src/index.ts'],
+  entry: ['src/index.ts', 'src/styles/spotlight.css'],
   format: ['esm'],
   dts: true,
   clean: true,
-  external: ['react', 'react-dom', '@floating-ui/react-dom'],
-  esbuildOptions(options) {
-    options.jsx = 'automatic'
+  deps: {
+    neverBundle: ['react', 'react-dom', '@floating-ui/react-dom'],
   },
 })
