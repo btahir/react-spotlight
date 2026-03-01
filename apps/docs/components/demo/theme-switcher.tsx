@@ -11,6 +11,7 @@ export function ThemeSwitcher() {
     <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
       {themes.map((theme) => (
         <button
+          type="button"
           key={theme}
           onClick={() => setActive(theme)}
           style={{

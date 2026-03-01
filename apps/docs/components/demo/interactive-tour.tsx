@@ -7,25 +7,28 @@ const steps = [
   {
     target: '[data-tour="hero"]',
     title: 'Welcome to react-spotlight',
-    content: 'This is a live tour running on the docs page itself. You\'re experiencing the product right now.',
+    content:
+      "This is a live tour running on the docs page itself. You're experiencing the product right now.",
     placement: 'bottom' as const,
   },
   {
     target: '[data-tour="features"]',
     title: 'Feature Highlights',
-    content: 'Beautiful by default, accessible, tiny bundle, and MIT licensed. Everything you need.',
+    content:
+      'Beautiful by default, accessible, tiny bundle, and MIT licensed. Everything you need.',
     placement: 'top' as const,
   },
   {
     target: '[data-tour="install"]',
     title: 'Quick Install',
-    content: 'One command to install. Add the provider, define your steps, and you\'re live.',
+    content: "One command to install. Add the provider, define your steps, and you're live.",
     placement: 'top' as const,
   },
   {
     target: '[data-tour="comparison"]',
     title: 'See the Difference',
-    content: 'Compare react-spotlight against other tour libraries. We win on every metric that matters.',
+    content:
+      'Compare react-spotlight against other tour libraries. We win on every metric that matters.',
     placement: 'top' as const,
   },
 ]
@@ -37,6 +40,7 @@ function TourButton() {
 
   return (
     <button
+      type="button"
       onClick={() => start('docs-tour')}
       style={{
         background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
