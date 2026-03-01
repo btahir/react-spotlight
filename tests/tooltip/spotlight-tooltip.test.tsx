@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react'
-import React from 'react'
 import { lightTheme } from '../../src/themes/default-light.ts'
 import { SpotlightTooltip } from '../../src/tooltip/spotlight-tooltip.tsx'
 import type { SpotlightStep } from '../../src/types.ts'
@@ -58,32 +57,24 @@ describe('SpotlightTooltip', () => {
   })
 
   it('returns null when targetElement is null', () => {
-    const { container } = render(
-      <SpotlightTooltip {...defaultProps} targetElement={null} />,
-    )
+    const { container } = render(<SpotlightTooltip {...defaultProps} targetElement={null} />)
     expect(container.innerHTML).toBe('')
   })
 
   it('renders with role="dialog" when targetElement is provided', () => {
-    render(
-      <SpotlightTooltip {...defaultProps} targetElement={targetElement} />,
-    )
+    render(<SpotlightTooltip {...defaultProps} targetElement={targetElement} />)
     expect(screen.getByRole('dialog')).toBeInTheDocument()
   })
 
   it('has aria-labelledby="spotlight-title" and aria-describedby="spotlight-content"', () => {
-    render(
-      <SpotlightTooltip {...defaultProps} targetElement={targetElement} />,
-    )
+    render(<SpotlightTooltip {...defaultProps} targetElement={targetElement} />)
     const dialog = screen.getByRole('dialog')
     expect(dialog).toHaveAttribute('aria-labelledby', 'spotlight-title')
     expect(dialog).toHaveAttribute('aria-describedby', 'spotlight-content')
   })
 
   it('renders step title and content', () => {
-    render(
-      <SpotlightTooltip {...defaultProps} targetElement={targetElement} />,
-    )
+    render(<SpotlightTooltip {...defaultProps} targetElement={targetElement} />)
     expect(screen.getByText('Test Title')).toBeInTheDocument()
     expect(screen.getByText('Test content body')).toBeInTheDocument()
   })
@@ -113,9 +104,7 @@ describe('SpotlightTooltip', () => {
   })
 
   it('applies theme styles', () => {
-    render(
-      <SpotlightTooltip {...defaultProps} targetElement={targetElement} />,
-    )
+    render(<SpotlightTooltip {...defaultProps} targetElement={targetElement} />)
     const dialog = screen.getByRole('dialog')
     // jsdom normalizes hex colors to rgb, so check with toHaveStyle
     expect(dialog).toHaveStyle({ background: lightTheme.tooltip.background })

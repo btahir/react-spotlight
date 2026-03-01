@@ -33,8 +33,8 @@ describe('waitForElement', () => {
   })
 
   it('cleans up the observer after resolving with an existing element', async () => {
-    const disconnectSpy = vi.fn()
-    const originalMutationObserver = globalThis.MutationObserver
+    const _disconnectSpy = vi.fn()
+    const _originalMutationObserver = globalThis.MutationObserver
 
     // The element exists immediately, so the observer should never be created
     // or should be cleaned up right away. We test that the function does not
@@ -54,7 +54,7 @@ describe('waitForElement', () => {
 
   it('cleans up the observer after resolving via mutation', async () => {
     const originalMO = globalThis.MutationObserver
-    let capturedDisconnect: (() => void) | undefined
+    let _capturedDisconnect: (() => void) | undefined
 
     class MockMutationObserver {
       private callback: MutationCallback
@@ -71,7 +71,7 @@ describe('waitForElement', () => {
         }, 10)
       }
       disconnect() {
-        capturedDisconnect = this.disconnect.bind(this)
+        _capturedDisconnect = this.disconnect.bind(this)
       }
     }
 
@@ -79,7 +79,7 @@ describe('waitForElement', () => {
 
     const result = await waitForElement('#observed-el', { timeout: 2000 })
     expect(result).not.toBeNull()
-    expect(result!.id).toBe('observed-el')
+    expect(result?.id).toBe('observed-el')
 
     globalThis.MutationObserver = originalMO
   })
@@ -87,7 +87,7 @@ describe('waitForElement', () => {
   it('uses default timeout of 5000ms if not specified', async () => {
     // We just verify it does not resolve instantly when the element is missing.
     // We do NOT wait the full 5 seconds; we set up a short race.
-    const start = Date.now()
+    const _start = Date.now()
     const raceResult = await Promise.race([
       waitForElement('#default-timeout'),
       new Promise<string>((r) => setTimeout(() => r('timer'), 100)),

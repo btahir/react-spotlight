@@ -1,5 +1,4 @@
-import { act, render } from '@testing-library/react'
-import React from 'react'
+import { render } from '@testing-library/react'
 import { SpotlightHighlight } from '../../src/components/spotlight-highlight.tsx'
 import { SpotlightContext } from '../../src/components/spotlight-provider.tsx'
 import type { SpotlightContextValue } from '../../src/types.ts'
@@ -47,13 +46,7 @@ describe('SpotlightHighlight', () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
     expect(() => {
-      render(
-        <SpotlightHighlight
-          target="#highlight-target"
-          title="Title"
-          content="Content"
-        />,
-      )
+      render(<SpotlightHighlight target="#highlight-target" title="Title" content="Content" />)
     }).toThrow('react-spotlight: <SpotlightHighlight> must be used within a <SpotlightProvider>.')
 
     spy.mockRestore()
@@ -64,11 +57,7 @@ describe('SpotlightHighlight', () => {
 
     const { container } = render(
       <SpotlightContext.Provider value={mockContext}>
-        <SpotlightHighlight
-          target="#highlight-target"
-          title="Title"
-          content="Content"
-        />
+        <SpotlightHighlight target="#highlight-target" title="Title" content="Content" />
       </SpotlightContext.Provider>,
     )
 

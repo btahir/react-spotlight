@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { lightTheme } from '../../src/themes/default-light.ts'
-import { TooltipContent } from '../../src/tooltip/tooltip-content.tsx'
 import type { TooltipContentProps } from '../../src/tooltip/tooltip-content.tsx'
+import { TooltipContent } from '../../src/tooltip/tooltip-content.tsx'
 import type { SpotlightStep } from '../../src/types.ts'
 
 function makeStep(overrides: Partial<SpotlightStep> = {}): SpotlightStep {
@@ -36,9 +36,7 @@ describe('TooltipContent', () => {
   })
 
   it('shows progress bar when showProgress is true', () => {
-    const { container } = render(
-      <TooltipContent {...defaultProps({ showProgress: true })} />,
-    )
+    const { container } = render(<TooltipContent {...defaultProps({ showProgress: true })} />)
 
     expect(container.querySelector('.spotlight-progress')).toBeInTheDocument()
   })

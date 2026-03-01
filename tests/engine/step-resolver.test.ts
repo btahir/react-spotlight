@@ -1,5 +1,5 @@
-import { resolveTarget, getTargetRect } from '../../src/engine/step-resolver.ts'
 import type { RefObject } from 'react'
+import { getTargetRect, resolveTarget } from '../../src/engine/step-resolver.ts'
 
 describe('resolveTarget', () => {
   afterEach(() => {

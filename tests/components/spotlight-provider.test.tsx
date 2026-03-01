@@ -28,8 +28,12 @@ function TourController({ tourId }: { tourId: string }) {
   return (
     <div>
       <span data-testid="status">{isActive ? 'active' : 'inactive'}</span>
-      <button type="button" onClick={() => start(tourId)}>Start</button>
-      <button type="button" onClick={() => stop()}>Stop</button>
+      <button type="button" onClick={() => start(tourId)}>
+        Start
+      </button>
+      <button type="button" onClick={() => stop()}>
+        Stop
+      </button>
     </div>
   )
 }
@@ -64,22 +68,26 @@ describe('SpotlightProvider', () => {
 
     render(
       <SpotlightProvider>
-        <ContextReader onContext={(ctx) => { capturedContext = ctx }} />
+        <ContextReader
+          onContext={(ctx) => {
+            capturedContext = ctx
+          }}
+        />
       </SpotlightProvider>,
     )
 
     expect(capturedContext).not.toBeNull()
-    expect(capturedContext!.isActive).toBe(false)
-    expect(capturedContext!.start).toBeTypeOf('function')
-    expect(capturedContext!.stop).toBeTypeOf('function')
-    expect(capturedContext!.next).toBeTypeOf('function')
-    expect(capturedContext!.previous).toBeTypeOf('function')
-    expect(capturedContext!.skip).toBeTypeOf('function')
-    expect(capturedContext!.goToStep).toBeTypeOf('function')
-    expect(capturedContext!.registerTour).toBeTypeOf('function')
-    expect(capturedContext!.unregisterTour).toBeTypeOf('function')
-    expect(capturedContext!.highlight).toBeTypeOf('function')
-    expect(capturedContext!.dismissHighlight).toBeTypeOf('function')
+    expect(capturedContext?.isActive).toBe(false)
+    expect(capturedContext?.start).toBeTypeOf('function')
+    expect(capturedContext?.stop).toBeTypeOf('function')
+    expect(capturedContext?.next).toBeTypeOf('function')
+    expect(capturedContext?.previous).toBeTypeOf('function')
+    expect(capturedContext?.skip).toBeTypeOf('function')
+    expect(capturedContext?.goToStep).toBeTypeOf('function')
+    expect(capturedContext?.registerTour).toBeTypeOf('function')
+    expect(capturedContext?.unregisterTour).toBeTypeOf('function')
+    expect(capturedContext?.highlight).toBeTypeOf('function')
+    expect(capturedContext?.dismissHighlight).toBeTypeOf('function')
   })
 
   it('start() activates the tour overlay', async () => {

@@ -46,7 +46,11 @@ describe('SpotlightTour', () => {
     render(
       <SpotlightProvider>
         <SpotlightTour id="my-tour" steps={testSteps} />
-        <ContextCapture onContext={(ctx) => { capturedCtx = ctx }} />
+        <ContextCapture
+          onContext={(ctx) => {
+            capturedCtx = ctx
+          }}
+        />
       </SpotlightProvider>,
     )
 
@@ -54,12 +58,12 @@ describe('SpotlightTour', () => {
 
     // The tour should be registered. Calling start should not warn about missing tour.
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
-    capturedCtx!.start('my-tour')
+    capturedCtx?.start('my-tour')
     expect(warnSpy).not.toHaveBeenCalled()
     warnSpy.mockRestore()
 
     // Cleanup
-    capturedCtx!.stop()
+    capturedCtx?.stop()
     document.body.removeChild(targetEl)
   })
 
@@ -69,7 +73,11 @@ describe('SpotlightTour', () => {
     const { unmount } = render(
       <SpotlightProvider>
         <SpotlightTour id="temp-tour" steps={testSteps} />
-        <ContextCapture onContext={(ctx) => { capturedCtx = ctx }} />
+        <ContextCapture
+          onContext={(ctx) => {
+            capturedCtx = ctx
+          }}
+        />
       </SpotlightProvider>,
     )
 
@@ -81,16 +89,18 @@ describe('SpotlightTour', () => {
     // Re-render the provider without the tour
     const { unmount: unmount2 } = render(
       <SpotlightProvider>
-        <ContextCapture onContext={(ctx) => { capturedCtx = ctx }} />
+        <ContextCapture
+          onContext={(ctx) => {
+            capturedCtx = ctx
+          }}
+        />
       </SpotlightProvider>,
     )
 
     // Now start should warn because the tour is not registered
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
-    capturedCtx!.start('temp-tour')
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('Tour "temp-tour" not found'),
-    )
+    capturedCtx?.start('temp-tour')
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Tour "temp-tour" not found'))
     warnSpy.mockRestore()
 
     unmount2()

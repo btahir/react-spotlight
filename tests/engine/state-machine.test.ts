@@ -39,10 +39,7 @@ describe('createTourStateMachine', () => {
     it('completes immediately when no steps pass the when predicate', async () => {
       const onComplete = vi.fn()
       const machine = createTourStateMachine({
-        steps: [
-          makeStep({ when: () => false }),
-          makeStep({ when: () => false }),
-        ],
+        steps: [makeStep({ when: () => false }), makeStep({ when: () => false })],
         onComplete,
       })
 
@@ -68,10 +65,7 @@ describe('createTourStateMachine', () => {
 
     it('skips initial steps whose when predicate returns false', async () => {
       const machine = createTourStateMachine({
-        steps: [
-          makeStep({ when: () => false, title: 'skipped' }),
-          makeStep({ title: 'shown' }),
-        ],
+        steps: [makeStep({ when: () => false, title: 'skipped' }), makeStep({ title: 'shown' })],
       })
 
       await machine.start()
@@ -204,8 +198,8 @@ describe('createTourStateMachine', () => {
       const state = machine.getState()
       expect(state.status).toBe('completed')
       expect(state.skippedAt).toBeDefined()
-      expect(state.skippedAt!.stepIndex).toBe(1)
-      expect(state.skippedAt!.timestamp).toBeTypeOf('number')
+      expect(state.skippedAt?.stepIndex).toBe(1)
+      expect(state.skippedAt?.timestamp).toBeTypeOf('number')
     })
 
     it('calls the onSkip callback with the current step index', async () => {
@@ -262,10 +256,7 @@ describe('createTourStateMachine', () => {
 
     it('does nothing if the target step when predicate returns false', async () => {
       const machine = createTourStateMachine({
-        steps: [
-          makeStep(),
-          makeStep({ when: () => false }),
-        ],
+        steps: [makeStep(), makeStep({ when: () => false })],
       })
 
       await machine.start()
@@ -412,8 +403,12 @@ describe('createTourStateMachine', () => {
   describe('lifecycle callbacks', () => {
     it('calls onBeforeShow before entering a step', async () => {
       const order: string[] = []
-      const onBeforeShow = vi.fn(() => { order.push('onBeforeShow') })
-      const onStateChange = vi.fn(() => { order.push('onStateChange') })
+      const onBeforeShow = vi.fn(() => {
+        order.push('onBeforeShow')
+      })
+      const onStateChange = vi.fn(() => {
+        order.push('onStateChange')
+      })
 
       const machine = createTourStateMachine({
         steps: [makeStep({ onBeforeShow })],
@@ -426,9 +421,7 @@ describe('createTourStateMachine', () => {
       // onBeforeShow should fire before the state change that records the step
       const beforeShowIndex = order.indexOf('onBeforeShow')
       // The first onStateChange is from setStatus('active'), the second is from enterStep
-      const stateChanges = order
-        .map((v, i) => ({ v, i }))
-        .filter(({ v }) => v === 'onStateChange')
+      const stateChanges = order.map((v, i) => ({ v, i })).filter(({ v }) => v === 'onStateChange')
       // onBeforeShow should appear before the second onStateChange (the enterStep one)
       expect(beforeShowIndex).toBeLessThan(stateChanges[1].i)
     })

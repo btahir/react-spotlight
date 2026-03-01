@@ -51,13 +51,7 @@ export function generateClipPath(rect: ElementRect, padding: number, radius: num
  * Used as the initial state before a target element is measured.
  */
 export function generateEmptyClipPath(): string {
-  const path = [
-    `M 0 0`,
-    `H ${VIEWPORT_SIZE}`,
-    `V ${VIEWPORT_SIZE}`,
-    `H 0`,
-    `Z`,
-  ].join(' ')
+  const path = [`M 0 0`, `H ${VIEWPORT_SIZE}`, `V ${VIEWPORT_SIZE}`, `H 0`, `Z`].join(' ')
 
   return `path('${path}')`
 }

@@ -1,5 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
-import React from 'react'
+import { fireEvent, render } from '@testing-library/react'
 import { SpotlightOverlay } from '../../src/overlay/spotlight-overlay.tsx'
 import type { ElementRect } from '../../src/types.ts'
 
@@ -46,27 +45,21 @@ describe('SpotlightOverlay', () => {
   })
 
   it('sets transition duration', () => {
-    const { container } = render(
-      <SpotlightOverlay targetRect={null} transitionDuration={500} />,
-    )
+    const { container } = render(<SpotlightOverlay targetRect={null} transitionDuration={500} />)
     const overlay = container.querySelector('.spotlight-overlay') as HTMLElement
     expect(overlay.style.transitionDuration).toBe('500ms')
   })
 
   it('calls onClick when overlay is clicked', () => {
     const handleClick = vi.fn()
-    const { container } = render(
-      <SpotlightOverlay targetRect={null} onClick={handleClick} />,
-    )
+    const { container } = render(<SpotlightOverlay targetRect={null} onClick={handleClick} />)
     const overlay = container.querySelector('.spotlight-overlay') as HTMLElement
     fireEvent.click(overlay)
     expect(handleClick).toHaveBeenCalledTimes(1)
   })
 
   it('sets pointer-events to "none" when interactive is true', () => {
-    const { container } = render(
-      <SpotlightOverlay targetRect={null} interactive={true} />,
-    )
+    const { container } = render(<SpotlightOverlay targetRect={null} interactive={true} />)
     const overlay = container.querySelector('.spotlight-overlay') as HTMLElement
     expect(overlay.style.pointerEvents).toBe('none')
   })

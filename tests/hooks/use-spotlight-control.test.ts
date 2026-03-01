@@ -24,9 +24,7 @@ describe('useSpotlightControl', () => {
   })
 
   it('isActive reflects tour state', () => {
-    const steps: SpotlightStep[] = [
-      { target: '#target', title: 'Test', content: 'Content' },
-    ]
+    const steps: SpotlightStep[] = [{ target: '#target', title: 'Test', content: 'Content' }]
 
     // Create target element
     const targetEl = document.createElement('div')

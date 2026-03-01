@@ -1,6 +1,6 @@
 import { useContext } from 'react'
-import type { SpotlightContextValue } from '../types.ts'
 import { SpotlightContext } from '../components/spotlight-provider.tsx'
+import type { SpotlightContextValue } from '../types.ts'
 
 /**
  * Hook to read spotlight/tour state.

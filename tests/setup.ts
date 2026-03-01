@@ -40,8 +40,6 @@ globalThis.IntersectionObserver = MockIntersectionObserver as unknown as typeof 
 
 // Mock ResizeObserver (not available in jsdom)
 class MockResizeObserver {
-  private callback: ResizeObserverCallback
-
   constructor(callback: ResizeObserverCallback) {
     this.callback = callback
   }

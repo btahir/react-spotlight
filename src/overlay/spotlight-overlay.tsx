@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import type { ElementRect } from '../types.ts'
 import { generateClipPath, generateEmptyClipPath } from './clip-path.ts'
 
@@ -56,11 +56,6 @@ export function SpotlightOverlay({
   }
 
   return (
-    <div
-      className="spotlight-overlay"
-      style={style}
-      onClick={handleClick}
-      aria-hidden="true"
-    />
+    <div className="spotlight-overlay" style={style} onClick={handleClick} aria-hidden="true" />
   )
 }

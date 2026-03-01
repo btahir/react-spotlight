@@ -127,7 +127,7 @@ describe('createFocusTrap', () => {
       bubbles: true,
       cancelable: true,
     })
-    const prevented = !document.dispatchEvent(tabEvent)
+    const _prevented = !document.dispatchEvent(tabEvent)
     // Event was dispatched with capture: true in the trap, so
     // preventDefault was called
     expect(document.activeElement).toBe(container)
