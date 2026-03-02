@@ -1,5 +1,5 @@
 import type { Placement as FloatingPlacement } from '@floating-ui/react-dom'
-import { arrow, flip, offset, shift, useFloating } from '@floating-ui/react-dom'
+import { arrow, autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom'
 import type React from 'react'
 import { useEffect, useRef, useState } from 'react'
 import type { SpotlightTheme } from '../themes/types.ts'
@@ -108,6 +108,7 @@ export function SpotlightTooltip({
     middlewareData,
   } = useFloating({
     placement: floatingPlacement,
+    whileElementsMounted: autoUpdate,
     middleware: [offset(12), flip(), shift({ padding: 8 }), arrow({ element: arrowRef })],
   })
 

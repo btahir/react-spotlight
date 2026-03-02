@@ -20,6 +20,7 @@ vi.mock('@floating-ui/react-dom', () => ({
       arrow: { x: 10, y: undefined },
     },
   }),
+  autoUpdate: vi.fn(),
   offset: () => ({}),
   flip: () => ({}),
   shift: () => ({}),
