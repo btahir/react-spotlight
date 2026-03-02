@@ -79,7 +79,7 @@ describe('TooltipContent', () => {
       />,
     )
 
-    expect(screen.getByText('Back')).toBeInTheDocument()
+    expect(screen.getByText('Previous')).toBeInTheDocument()
   })
 
   it('hides previous button on first step', () => {
@@ -92,7 +92,7 @@ describe('TooltipContent', () => {
       />,
     )
 
-    expect(screen.queryByText('Back')).not.toBeInTheDocument()
+    expect(screen.queryByText('Previous')).not.toBeInTheDocument()
   })
 
   it('shows "Done" text on last step', () => {
@@ -137,7 +137,7 @@ describe('TooltipContent', () => {
     expect(onNext).toHaveBeenCalledOnce()
   })
 
-  it('calls onPrevious when Back button is clicked', () => {
+  it('calls onPrevious when Previous button is clicked', () => {
     const onPrevious = vi.fn()
     render(
       <TooltipContent
@@ -149,7 +149,7 @@ describe('TooltipContent', () => {
       />,
     )
 
-    fireEvent.click(screen.getByText('Back'))
+    fireEvent.click(screen.getByText('Previous'))
     expect(onPrevious).toHaveBeenCalledOnce()
   })
 

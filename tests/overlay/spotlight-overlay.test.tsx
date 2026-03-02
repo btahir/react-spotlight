@@ -58,10 +58,10 @@ describe('SpotlightOverlay', () => {
     expect(handleClick).toHaveBeenCalledTimes(1)
   })
 
-  it('sets pointer-events to "none" when interactive is true', () => {
+  it('keeps pointer-events as "auto" when interactive is true', () => {
     const { container } = render(<SpotlightOverlay targetRect={null} interactive={true} />)
     const overlay = container.querySelector('.spotlight-overlay') as HTMLElement
-    expect(overlay.style.pointerEvents).toBe('none')
+    expect(overlay.style.pointerEvents).toBe('auto')
   })
 
   it('sets pointer-events to "auto" when interactive is false (default)', () => {

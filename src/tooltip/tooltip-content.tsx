@@ -18,7 +18,7 @@ export interface TooltipContentProps {
 
 const DEFAULT_LABELS = {
   next: 'Next',
-  previous: 'Back',
+  previous: 'Previous',
   skip: 'Skip',
   done: 'Done',
   close: 'Close',
@@ -50,7 +50,7 @@ export function TooltipContent({
   const closeLabel = labels?.close ?? DEFAULT_LABELS.close
   const stepOfLabel = labels?.stepOf
     ? labels.stepOf(currentIndex + 1, totalSteps)
-    : `${currentIndex + 1} / ${totalSteps}`
+    : `Step ${currentIndex + 1} of ${totalSteps}`
 
   return (
     <>

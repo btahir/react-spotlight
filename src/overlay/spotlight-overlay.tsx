@@ -44,11 +44,38 @@ export function SpotlightOverlay({
     clipPath,
     WebkitClipPath: clipPath,
     transitionDuration: `${transitionDuration}ms`,
-    pointerEvents: interactive ? 'none' : 'auto',
+    pointerEvents: 'auto',
   }
 
   const handleClick = (event: React.MouseEvent): void => {
-    // Only fire onClick when clicking the overlay itself, not the cutout area
+    if (interactive && targetRect) {
+      const withinX =
+        event.clientX >= targetRect.x && event.clientX <= targetRect.x + targetRect.width
+      const withinY =
+        event.clientY >= targetRect.y && event.clientY <= targetRect.y + targetRect.height
+
+      if (withinX && withinY) {
+        const overlay = event.currentTarget
+        const previousPointerEvents = overlay.style.pointerEvents
+        overlay.style.pointerEvents = 'none'
+        const underlying = document.elementFromPoint(event.clientX, event.clientY)
+        overlay.style.pointerEvents = previousPointerEvents
+
+        if (underlying && underlying instanceof HTMLElement) {
+          underlying.dispatchEvent(
+            new MouseEvent('click', {
+              bubbles: true,
+              cancelable: true,
+              clientX: event.clientX,
+              clientY: event.clientY,
+              view: window,
+            }),
+          )
+        }
+        return
+      }
+    }
+
     if (onClick) {
       event.stopPropagation()
       onClick()

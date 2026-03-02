@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react'
+import { act, render } from '@testing-library/react'
 import React from 'react'
 import { SpotlightProvider } from '../../src/components/spotlight-provider.tsx'
 import { SpotlightTour } from '../../src/components/spotlight-tour.tsx'
@@ -35,7 +35,7 @@ describe('SpotlightTour', () => {
     consoleSpy.mockRestore()
   })
 
-  it('registers tour on mount', () => {
+  it('registers tour on mount', async () => {
     let capturedCtx: SpotlightContextValue | null = null
 
     // Create target element so start can find it
@@ -58,12 +58,18 @@ describe('SpotlightTour', () => {
 
     // The tour should be registered. Calling start should not warn about missing tour.
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
-    capturedCtx?.start('my-tour')
+    await act(async () => {
+      capturedCtx?.start('my-tour')
+      await Promise.resolve()
+    })
     expect(warnSpy).not.toHaveBeenCalled()
     warnSpy.mockRestore()
 
     // Cleanup
-    capturedCtx?.stop()
+    await act(async () => {
+      capturedCtx?.stop()
+      await Promise.resolve()
+    })
     document.body.removeChild(targetEl)
   })
 

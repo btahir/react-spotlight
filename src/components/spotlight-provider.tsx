@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { waitForElement } from '../engine/element-observer.ts'
 import { createKeyboardHandler } from '../engine/keyboard.ts'
 import type { TourStateMachineActions } from '../engine/state-machine.ts'
 import { createTourStateMachine } from '../engine/state-machine.ts'
@@ -17,7 +18,7 @@ import type {
   TooltipRenderProps,
   TourState,
 } from '../types.ts'
-import { getStepAriaLabel } from '../utils/a11y.ts'
+import { getStepAriaLabel, setInert } from '../utils/a11y.ts'
 import { scrollIntoView } from '../utils/scroll-into-view.ts'
 
 const SpotlightContext = React.createContext<SpotlightContextValue | null>(null)
@@ -33,7 +34,7 @@ interface TourRegistration {
 
 export function SpotlightProvider({
   children,
-  theme: themeProp = 'auto',
+  theme: themeProp = 'light',
   overlayColor,
   transitionDuration = 300,
   escToDismiss = true,
@@ -50,6 +51,9 @@ export function SpotlightProvider({
   const tours = useRef<Map<string, TourRegistration>>(new Map())
   const machineRef = useRef<TourStateMachineActions | null>(null)
   const triggerElementRef = useRef<HTMLElement | null>(null)
+  const portalRootRef = useRef<HTMLDivElement | null>(null)
+  const activeTourIdRef = useRef<string | null>(null)
+  const highlightStepRef = useRef<SpotlightStep | null>(null)
 
   const [activeTourId, setActiveTourId] = useState<string | null>(null)
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
@@ -64,6 +68,14 @@ export function SpotlightProvider({
 
   const isActive = activeTourId !== null || highlightStep !== null
 
+  useEffect(() => {
+    activeTourIdRef.current = activeTourId
+  }, [activeTourId])
+
+  useEffect(() => {
+    highlightStepRef.current = highlightStep
+  }, [highlightStep])
+
   // Get the current step from active tour
   const getCurrentStep = useCallback((): SpotlightStep | null => {
     if (highlightStep) return highlightStep
@@ -72,10 +84,26 @@ export function SpotlightProvider({
     return tour?.steps[currentStepIndex] ?? null
   }, [activeTourId, currentStepIndex, highlightStep])
 
+  const dismissHighlight = useCallback(() => {
+    highlightStepRef.current?.onHide?.()
+    highlightStepRef.current = null
+    setHighlightStep(null)
+    setHighlightElement(null)
+    setHighlightRect(null)
+
+    if (triggerElementRef.current) {
+      triggerElementRef.current.focus()
+      triggerElementRef.current = null
+    }
+  }, [])
+
   // Resolve target element and measure it
   const resolveAndMeasure = useCallback(
     async (step: SpotlightStep): Promise<HTMLElement | null> => {
-      const el = resolveTarget(step.target)
+      let el = resolveTarget(step.target)
+      if (!el && typeof step.target === 'string') {
+        el = await waitForElement(step.target)
+      }
       if (!el) return null
       await scrollIntoView(el)
       return el
@@ -124,8 +152,7 @@ export function SpotlightProvider({
       onPrevious: () => machineRef.current?.previous(),
       onDismiss: () => {
         if (highlightStep) {
-          setHighlightStep(null)
-          setHighlightElement(null)
+          dismissHighlight()
         } else {
           machineRef.current?.skip()
         }
@@ -135,13 +162,14 @@ export function SpotlightProvider({
 
     handler.attach()
     return () => handler.detach()
-  }, [isActive, escToDismiss, highlightStep])
+  }, [isActive, escToDismiss, highlightStep, dismissHighlight])
 
   const handleStateChange = useCallback(
-    (state: TourState) => {
+    (tourId: string, state: TourState) => {
       setCurrentStepIndex(state.currentStepIndex)
 
       if (state.status === 'idle' || state.status === 'completed') {
+        activeTourIdRef.current = null
         setActiveTourId(null)
         setTargetElement(null)
         setTargetRect(null)
@@ -154,11 +182,9 @@ export function SpotlightProvider({
         }
       }
 
-      if (activeTourId) {
-        onStateChange?.(activeTourId, state)
-      }
+      onStateChange?.(tourId, state)
     },
-    [activeTourId, onStateChange],
+    [onStateChange],
   )
 
   // When step changes, resolve the new target
@@ -169,9 +195,27 @@ export function SpotlightProvider({
     if (!step) return
 
     let cancelled = false
+    const expectedIndex = currentStepIndex
+
+    // Reset current target while the next step target is being resolved.
+    setTargetElement(null)
+    setTargetRect(null)
+
     resolveAndMeasure(step).then((el) => {
-      if (!cancelled) {
+      if (cancelled) return
+
+      if (el) {
         setTargetElement(el)
+        return
+      }
+
+      const machine = machineRef.current
+      if (
+        machine &&
+        machine.getState().status === 'active' &&
+        machine.getState().currentStepIndex === expectedIndex
+      ) {
+        void machine.next()
       }
     })
 
@@ -179,6 +223,15 @@ export function SpotlightProvider({
       cancelled = true
     }
   }, [activeTourId, currentStepIndex, resolveAndMeasure])
+
+  // Mark the rest of the page inert while spotlight UI is active.
+  useEffect(() => {
+    if (!isActive) return
+    const root = portalRootRef.current
+    if (!root) return
+
+    return setInert(root)
+  }, [isActive])
 
   const start = useCallback(
     (tourId: string) => {
@@ -189,6 +242,16 @@ export function SpotlightProvider({
           `react-tourlight: Tour "${tourId}" not found. Make sure <SpotlightTour id="${tourId}"> is mounted.`,
         )
         return
+      }
+
+      // If a one-off highlight is active, dismiss it before starting a tour.
+      if (highlightStepRef.current) {
+        dismissHighlight()
+      }
+
+      // Only one tour can be active at a time.
+      if (activeTourIdRef.current) {
+        machineRef.current?.stop()
       }
 
       // Store the element that triggered the tour for focus restoration
@@ -205,15 +268,18 @@ export function SpotlightProvider({
           tour.onSkip?.(stepIndex)
           onSkip?.(tourId, stepIndex)
         },
-        onStateChange: handleStateChange,
+        onStateChange: (state) => {
+          handleStateChange(tourId, state)
+        },
       })
 
       machineRef.current = machine
+      activeTourIdRef.current = tourId
       setActiveTourId(tourId)
       setTotalSteps(tour.steps.length)
       machine.start()
     },
-    [handleStateChange, initialState, onComplete, onSkip],
+    [dismissHighlight, handleStateChange, initialState, onComplete, onSkip],
   )
 
   const stop = useCallback(() => {
@@ -269,9 +335,10 @@ export function SpotlightProvider({
   const highlight = useCallback(
     (step: SpotlightStep) => {
       // Stop any active tour
-      if (activeTourId) stop()
+      if (activeTourIdRef.current) stop()
 
       triggerElementRef.current = document.activeElement as HTMLElement | null
+      highlightStepRef.current = step
       setHighlightStep(step)
 
       const el = resolveTarget(step.target)
@@ -279,19 +346,8 @@ export function SpotlightProvider({
         scrollIntoView(el).then(() => setHighlightElement(el))
       }
     },
-    [activeTourId, stop],
+    [stop],
   )
-
-  const dismissHighlight = useCallback(() => {
-    setHighlightStep(null)
-    setHighlightElement(null)
-    setHighlightRect(null)
-
-    if (triggerElementRef.current) {
-      triggerElementRef.current.focus()
-      triggerElementRef.current = null
-    }
-  }, [])
 
   const handleOverlayClick = useCallback(() => {
     if (!overlayClickToDismiss) return
@@ -352,58 +408,60 @@ export function SpotlightProvider({
     <SpotlightContext.Provider value={contextValue}>
       {children}
 
-      {isActive && currentStep && createPortal(
-        <>
-          <SpotlightOverlay
-            targetRect={activeRect}
-            padding={0}
-            radius={currentStep.spotlightRadius ?? 8}
-            overlayColor={overlayColor ?? theme.overlay.background}
-            transitionDuration={transitionDuration}
-            onClick={handleOverlayClick}
-            interactive={currentStep.interactive}
-          />
+      {isActive &&
+        currentStep &&
+        createPortal(
+          <div ref={portalRootRef}>
+            <SpotlightOverlay
+              targetRect={activeRect}
+              padding={0}
+              radius={currentStep.spotlightRadius ?? 8}
+              overlayColor={overlayColor ?? theme.overlay.background}
+              transitionDuration={transitionDuration}
+              onClick={handleOverlayClick}
+              interactive={currentStep.interactive}
+            />
 
-          <SpotlightTooltip
-            targetElement={activeElement}
-            step={currentStep}
-            currentIndex={highlightStep ? 0 : currentStepIndex}
-            totalSteps={highlightStep ? 1 : totalSteps}
-            onNext={highlightStep ? dismissHighlight : next}
-            onPrevious={previous}
-            onSkip={highlightStep ? dismissHighlight : skip}
-            onClose={highlightStep ? dismissHighlight : stop}
-            theme={theme}
-            showProgress={highlightStep ? false : showProgress}
-            showSkip={highlightStep ? false : showSkip}
-            labels={activeLabels}
-            renderTooltip={activeTour?.renderTooltip}
-            transitionDuration={transitionDuration}
-          />
+            <SpotlightTooltip
+              targetElement={activeElement}
+              step={currentStep}
+              currentIndex={highlightStep ? 0 : currentStepIndex}
+              totalSteps={highlightStep ? 1 : totalSteps}
+              onNext={highlightStep ? dismissHighlight : next}
+              onPrevious={previous}
+              onSkip={highlightStep ? dismissHighlight : skip}
+              onClose={highlightStep ? dismissHighlight : stop}
+              theme={theme}
+              showProgress={highlightStep ? false : showProgress}
+              showSkip={highlightStep ? false : showSkip}
+              labels={activeLabels}
+              renderTooltip={activeTour?.renderTooltip}
+              transitionDuration={transitionDuration}
+            />
 
-          {/* Live region for screen reader step announcements */}
-          <div
-            aria-live="polite"
-            className="sr-only"
-            style={{
-              position: 'absolute',
-              width: 1,
-              height: 1,
-              overflow: 'hidden',
-              clip: 'rect(0, 0, 0, 0)',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {currentStep.title &&
-              getStepAriaLabel(
-                highlightStep ? 0 : currentStepIndex,
-                highlightStep ? 1 : totalSteps,
-                currentStep.title,
-              )}
-          </div>
-        </>,
-        document.body
-      )}
+            {/* Live region for screen reader step announcements */}
+            <div
+              aria-live="polite"
+              className="sr-only"
+              style={{
+                position: 'absolute',
+                width: 1,
+                height: 1,
+                overflow: 'hidden',
+                clip: 'rect(0, 0, 0, 0)',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {currentStep.title &&
+                getStepAriaLabel(
+                  highlightStep ? 0 : currentStepIndex,
+                  highlightStep ? 1 : totalSteps,
+                  currentStep.title,
+                )}
+            </div>
+          </div>,
+          document.body,
+        )}
     </SpotlightContext.Provider>
   )
 }

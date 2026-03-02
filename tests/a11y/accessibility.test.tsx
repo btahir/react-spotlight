@@ -97,7 +97,7 @@ describe('accessibility', () => {
   })
 
   it('screen reader live region announces step changes', async () => {
-    const { cleanup, container } = renderWithActiveTour()
+    const { cleanup } = renderWithActiveTour()
 
     await act(async () => {
       await new Promise((r) => setTimeout(r, 50))
@@ -121,6 +121,19 @@ describe('accessibility', () => {
 
     const closeButton = screen.queryByLabelText('Close')
     expect(closeButton).toBeInTheDocument()
+
+    cleanup()
+  })
+
+  it('marks background elements as inert while active', async () => {
+    const { cleanup } = renderWithActiveTour()
+
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 50))
+    })
+
+    const backgroundTarget = document.getElementById('a11y-target')
+    expect(backgroundTarget?.inert).toBe(true)
 
     cleanup()
   })

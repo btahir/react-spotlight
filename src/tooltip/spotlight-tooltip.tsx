@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { SpotlightTheme } from '../themes/types.ts'
 import type { Placement, SpotlightLabels, SpotlightStep, TooltipRenderProps } from '../types.ts'
 import { cn } from '../utils/css.ts'
+import { createFocusTrap } from './focus-trap.ts'
 import { TooltipArrow } from './tooltip-arrow.tsx'
 import { TooltipContent } from './tooltip-content.tsx'
 
@@ -95,6 +96,7 @@ export function SpotlightTooltip({
   transitionDuration = 300,
 }: SpotlightTooltipProps) {
   const arrowRef = useRef<HTMLDivElement>(null)
+  const tooltipRef = useRef<HTMLDivElement | null>(null)
   const [animationClass, setAnimationClass] = useState('spotlight-tooltip-enter')
 
   const floatingPlacement = toFloatingPlacement(step.placement)
@@ -115,6 +117,19 @@ export function SpotlightTooltip({
       refs.setReference(targetElement)
     }
   }, [targetElement, refs])
+
+  // Keep keyboard focus trapped inside the tooltip while it's visible.
+  useEffect(() => {
+    const tooltip = tooltipRef.current
+    if (!tooltip || !targetElement) return
+
+    const trap = createFocusTrap(tooltip)
+    trap.activate()
+
+    return () => {
+      trap.deactivate()
+    }
+  }, [targetElement])
 
   // Enter animation: start with enter class, add enter-active on next frame.
   // We intentionally depend on currentIndex to restart the animation when the step changes.
@@ -169,7 +184,10 @@ export function SpotlightTooltip({
 
   return (
     <div
-      ref={refs.setFloating}
+      ref={(node) => {
+        tooltipRef.current = node
+        refs.setFloating(node)
+      }}
       className={cn('spotlight-tooltip', animationClass)}
       style={
         {
