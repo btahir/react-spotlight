@@ -5,6 +5,10 @@
 <h1 align="center">react-spotlight</h1>
 
 <p align="center">
+  <a href="assets/launch-video.mp4">Watch the launch video</a>
+</p>
+
+<p align="center">
   Beautiful onboarding tours & feature highlights for React.<br/>
   Zero dependencies. Looks like 2026, not 2018.
 </p>
