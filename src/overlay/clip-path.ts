@@ -43,7 +43,11 @@ export function generateClipPath(rect: ElementRect, padding: number, radius: num
     `Z`,
   ].join(' ')
 
-  return `path('${path}')`
+  // The evenodd fill rule is critical: both subpaths are drawn clockwise,
+  // so with the default nonzero rule the inner area has winding number 2
+  // (still "inside") and no cutout appears. With evenodd, the inner area
+  // has 2 crossings (even → outside), which correctly creates the hole.
+  return `path(evenodd, '${path}')`
 }
 
 /**

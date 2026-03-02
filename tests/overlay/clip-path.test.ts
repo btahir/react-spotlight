@@ -4,10 +4,10 @@ import type { ElementRect } from '../../src/types.ts'
 describe('generateClipPath', () => {
   const rect: ElementRect = { x: 100, y: 200, width: 300, height: 150 }
 
-  it('produces a valid SVG path string wrapped in path()', () => {
+  it('produces a valid SVG path string wrapped in path() with evenodd fill rule', () => {
     const result = generateClipPath(rect, 0, 0)
 
-    expect(result).toMatch(/^path\('.*'\)$/)
+    expect(result).toMatch(/^path\(evenodd, '.*'\)$/)
   })
 
   it('contains an outer rectangle and an inner cutout', () => {

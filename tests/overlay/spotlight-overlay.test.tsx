@@ -16,12 +16,12 @@ describe('SpotlightOverlay', () => {
     expect(overlay).toBeInTheDocument()
   })
 
-  it('applies clip-path when targetRect is provided', () => {
+  it('applies clip-path with evenodd fill rule when targetRect is provided', () => {
     const { container } = render(
       <SpotlightOverlay targetRect={targetRect} padding={8} radius={4} />,
     )
     const overlay = container.querySelector('.spotlight-overlay') as HTMLElement
-    expect(overlay.style.clipPath).toContain('path(')
+    expect(overlay.style.clipPath).toContain('path(evenodd,')
     // The path should contain coordinates derived from the target rect
     expect(overlay.style.clipPath).not.toBe('')
   })
