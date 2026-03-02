@@ -40,6 +40,13 @@ export const metadata: Metadata = {
       'Zero dependencies, fully accessible, ~5KB gzipped. The modern alternative to React Joyride.',
     images: ['/og.png'],
   },
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {

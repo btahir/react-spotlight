@@ -23,8 +23,8 @@ import nightDrive from '../assets/night_drive.mp3';
 /**
  * Launch video: 1920x1080, 30fps, ~20 seconds (600 frames).
  *
- * Scene 1 (0-2.5s/75f): Hero headline fade in
- * Scene 2 (2.5-6s/105f): Terminal install + code snippet
+ * Scene 1 (0-1.5s/45f): Hero headline fade in
+ * Scene 2 (1.5-5s/105f): Terminal install + code snippet
  * Scene 3 (6-12.5s/195f): Live spotlight demo on mock dashboard
  * Scene 4 (12.5-16s/105f): Comparison flash
  * Scene 5 (16-20s/120f): CTA with install command
@@ -424,8 +424,8 @@ export const LaunchVideo: React.FC = () => {
     <>
     <Audio src={nightDrive} volume={0.6} />
     <TransitionSeries>
-      {/* Scene 1: Headline — 2.5s */}
-      <TransitionSeries.Sequence durationInFrames={75}>
+      {/* Scene 1: Headline — 1.5s */}
+      <TransitionSeries.Sequence durationInFrames={45}>
         <SceneHeadline />
       </TransitionSeries.Sequence>
 

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <!-- Spotlight beam gradient -->
+    <linearGradient id="beam" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.03"/>
+    </linearGradient>
+    <!-- Glow for the light source -->
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Outer ambient glow -->
+    <radialGradient id="ambient" cx="0.5" cy="0.3" r="0.6">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" fill="#0a0a0f"/>
+
+  <!-- Subtle ambient glow behind beam -->
+  <rect width="512" height="512" rx="96" fill="url(#ambient)"/>
+
+  <!-- Spotlight beam — cone from source down -->
+  <path d="M 237 148 L 275 148 L 368 420 L 144 420 Z" fill="url(#beam)"/>
+
+  <!-- Three tour waypoint dots along the beam center -->
+  <!-- Step 1 (top, active/highlighted) -->
+  <circle cx="256" cy="220" r="10" fill="#fbbf24" opacity="0.9"/>
+  <!-- Step 2 (middle) -->
+  <circle cx="256" cy="300" r="8" fill="#f59e0b" opacity="0.5"/>
+  <!-- Step 3 (bottom) -->
+  <circle cx="256" cy="370" r="6" fill="#f59e0b" opacity="0.3"/>
+
+  <!-- Connecting path between dots (tour route) -->
+  <line x1="256" y1="230" x2="256" y2="292" stroke="#f59e0b" stroke-width="2" opacity="0.3" stroke-dasharray="4 4"/>
+  <line x1="256" y1="308" x2="256" y2="364" stroke="#f59e0b" stroke-width="2" opacity="0.2" stroke-dasharray="4 4"/>
+
+  <!-- Light source -->
+  <circle cx="256" cy="128" r="22" fill="url(#glow)"/>
+  <!-- Light source bright center -->
+  <circle cx="256" cy="128" r="10" fill="#fde68a"/>
+
+  <!-- Pulse ring around light source -->
+  <circle cx="256" cy="128" r="34" stroke="#f59e0b" stroke-width="1.5" opacity="0.2" fill="none"/>
+</svg>

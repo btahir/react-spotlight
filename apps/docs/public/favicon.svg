@@ -1,7 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <rect width="32" height="32" rx="8" fill="#1e1e2e"/>
-  <circle cx="16" cy="14" r="4" fill="#818cf8"/>
-  <path d="M16 18 L10 28 L14 28 L16 24 L18 28 L22 28 Z" fill="#818cf8" opacity="0.6"/>
-  <circle cx="16" cy="14" r="6" stroke="#818cf8" stroke-width="1" opacity="0.3"/>
-  <circle cx="16" cy="14" r="9" stroke="#818cf8" stroke-width="0.5" opacity="0.15"/>
+  <defs>
+    <linearGradient id="b" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.02"/>
+    </linearGradient>
+    <radialGradient id="g" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#fde68a"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="32" height="32" rx="6" fill="#0a0a0f"/>
+
+  <!-- Spotlight beam -->
+  <path d="M 14.5 9 L 17.5 9 L 24 28 L 8 28 Z" fill="url(#b)"/>
+
+  <!-- Tour waypoints -->
+  <circle cx="16" cy="14.5" r="2" fill="#fbbf24" opacity="0.9"/>
+  <circle cx="16" cy="20" r="1.5" fill="#f59e0b" opacity="0.5"/>
+  <circle cx="16" cy="25" r="1" fill="#f59e0b" opacity="0.3"/>
+
+  <!-- Light source -->
+  <circle cx="16" cy="7.5" r="2.5" fill="url(#g)"/>
 </svg>

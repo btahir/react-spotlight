@@ -5,10 +5,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bilaltahir/react-tourlight.git"
+    "url": "git+https://github.com/btahir/react-tourlight.git"
   },
   "bugs": {
-    "url": "https://github.com/bilaltahir/react-tourlight/issues"
+    "url": "https://github.com/btahir/react-tourlight/issues"
   },
   "homepage": "https://react-tourlight.dev",
   "engines": {
@@ -37,6 +37,7 @@
   "keywords": [
     "react",
     "spotlight",
+    "tourlight",
     "tour",
     "onboarding",
     "product-tour",

@@ -13,7 +13,7 @@ Thanks for your interest in contributing! This guide will help you get set up an
 
 ```bash
 # Clone the repository
-git clone https://github.com/bilaltahir/react-tourlight.git
+git clone https://github.com/btahir/react-tourlight.git
 cd react-tourlight
 
 # Install dependencies
@@ -122,7 +122,7 @@ The changeset file will be committed with your PR and consumed during the releas
 
 ## Reporting issues
 
-Found a bug or have a feature request? [Open an issue](https://github.com/bilaltahir/react-tourlight/issues) with:
+Found a bug or have a feature request? [Open an issue](https://github.com/btahir/react-tourlight/issues) with:
 - A clear title and description
 - Steps to reproduce (for bugs)
 - Expected vs actual behavior

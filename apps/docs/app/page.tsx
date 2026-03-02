@@ -32,7 +32,7 @@ export default function HomePage() {
             Docs
           </Link>
           <a
-            href="https://github.com/bilaltahir/react-tourlight"
+            href="https://github.com/btahir/react-tourlight"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm transition-colors hover:text-white"
@@ -118,7 +118,7 @@ export default function HomePage() {
               }}
             />
             <a
-              href="https://github.com/bilaltahir/react-tourlight"
+              href="https://github.com/btahir/react-tourlight"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-lg px-7 py-3.5 text-sm font-medium transition-colors duration-200 hover:bg-white/5"
@@ -617,7 +617,7 @@ export default function HomePage() {
         <p>
           MIT License &middot;{' '}
           <a
-            href="https://github.com/bilaltahir/react-tourlight"
+            href="https://github.com/btahir/react-tourlight"
             target="_blank"
             rel="noopener noreferrer"
             className="underline transition-colors hover:text-white"

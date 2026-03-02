@@ -16,11 +16,11 @@ export const RemotionRoot: React.FC = () => {
         height={500}
       />
 
-      {/* Launch video — 1920×1080, 30fps, ~20s */}
+      {/* Launch video — 1920×1080, 30fps, ~19s */}
       <Composition
         id="LaunchVideo"
         component={LaunchVideo}
-        durationInFrames={600}
+        durationInFrames={570}
         fps={30}
         width={1920}
         height={1080}
