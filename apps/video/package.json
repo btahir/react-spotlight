@@ -1,0 +1,25 @@
+{
+  "name": "@react-spotlight/video",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "render:hero": "remotion render src/index.ts HeroGif ../../assets/readme-hero.gif --codec=gif --every-nth-frame=3",
+    "render:launch": "remotion render src/index.ts LaunchVideo ../../assets/launch-video.mp4 --codec=h264",
+    "render:social": "remotion still src/index.ts SocialCard ../../assets/social-card.png",
+    "render:all": "pnpm render:hero && pnpm render:launch && pnpm render:social"
+  },
+  "dependencies": {
+    "remotion": "^4.0.0",
+    "@remotion/cli": "^4.0.0",
+    "@remotion/transitions": "^4.0.0",
+    "@remotion/google-fonts": "^4.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0"
+  }
+}
